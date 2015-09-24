@@ -70,25 +70,6 @@ VPN_ACTIVE="$(systemctl is-active openvpn@$VPN_CURRENT)"
 
 #################################################
 #
-# Dirty notifications (ACPI it now.. you lazy bastard!?)
-#
-#################################################
-notify_battery(){
-  if [ -f /tmp/.sysutils/battery_warning ]; then
-    old_stamp="$(cat /tmp/.sysutils/battery_warning)"
-    time_diff=$(($(timestamp) - $old_stamp))
-    if [[ $time_diff -ge 300 ]]; then
-      echo $(timestamp) > /tmp/.sysutils/battery_warning
-      dunstify --urgency=critical "Battery low\!" "Please connect charger"   
-    fi
-  else
-      echo $(timestamp) > /tmp/.sysutils/battery_warning
-      dunstify --urgency=critical "Battery low\!" "Please connect charger"   
-  fi
-}
-
-#################################################
-#
 # Status functions
 #
 #################################################
@@ -104,7 +85,7 @@ print_battery(){
       "Charging") b_icon=$icon_battery_charging ;; 
       "Discharging") 
         case $BATTERY_LEVEL in
-            [0-9]) b_icon=$icon_battery_0; notify_battery ;; 
+            [0-9]) b_icon=$icon_battery_0 ;; 
             [1-2][0-9]) b_icon=$icon_battery_20 ;;
             [3-4][0-9]) b_icon=$icon_battery_40 ;;
             [5-6][0-9]) b_icon=$icon_battery_60 ;;
